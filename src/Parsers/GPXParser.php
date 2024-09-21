@@ -33,6 +33,16 @@ class GPXParser extends Parser
             throw new Exception("Unable to find valid activity in file contents");
         }
 
+        if (isset($data->metadata)) {
+            foreach((array)$data->metadata as $key => $value) {
+                if (is_scalar($value)) {
+                    $activity->addMetaData($key, $value);
+                } else {
+                    $activity->addMetaData($key, (array)$value);
+                }
+            }
+        }
+
         // Parse the first activity
         $activityNode = $data->trk;
         $activity->setStartTime(new DateTime((string)$activityNode->trkseg[0]->trkpt[0]->time));

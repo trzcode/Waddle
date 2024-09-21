@@ -97,9 +97,9 @@ abstract class Converter
      * @param float $val
      * @return string
      */
-    public static function convertSecondsToHumanReadable($val)
+    public static function convertSecondsToHumanReadable(float $val)
     {
-        return sprintf("%02d:%02d:%02d", ($val / 3600), ($val / 60 % 60), ($val % 60));
+        return sprintf("%02d:%02d:%02d", ($val / 3600), (floor($val / 60) % 60), (floor($val) % 60));
     }
 
     /**

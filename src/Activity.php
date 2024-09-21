@@ -7,10 +7,16 @@ use DateTimeZone;
 
 class Activity
 {
+
+    /** @var array */
+    protected $metadata = [];
+
     /** @var string */
     protected $type;
+
     /** @var DateTime */
     protected $startTime;
+
     /** @var Lap[] */
     protected $laps = [];
 
@@ -92,6 +98,38 @@ class Activity
     public function setLaps(array $laps)
     {
         $this->laps = $laps;
+        return $this;
+    }
+
+    public function getMetaData(?string $key = null)
+    {
+        if (!is_null($key)) {
+            return (array_key_exists($key, $this->metadata)) ? $this->metadata[$key] : false;
+        } else {
+            return $this->metadata;
+        }
+    }
+
+    /**
+     * Set the metadata array
+     * @param array $data
+     * @return $this
+     */
+    public function setMetaData(array $data)
+    {
+        $this->metadata = $data;
+        return $this;
+    }
+
+    /**
+     * Add a metadata element
+     * @param string $key
+     * @param mixed $value
+     * @return $this
+     */
+    public function addMetaData(string $key, $value)
+    {
+        $this->metadata[$key] = $value;
         return $this;
     }
 
@@ -239,6 +277,9 @@ class Activity
 
             }
         }
+
+        $result['ascent'] = round($result['ascent'], 1);
+        $result['descent'] = round($result['descent'], 1);
 
         return $result;
     }

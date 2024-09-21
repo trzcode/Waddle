@@ -2,7 +2,7 @@
 
 namespace Waddle\Parsers;
 
-class TXCParserTest extends \PHPUnit\Framework\TestCase
+class TCXParserTest extends \PHPUnit\Framework\TestCase
 {
     public $parser;
     

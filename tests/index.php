@@ -15,6 +15,7 @@ require_once __DIR__ . '/../src/Parsers/PWXParser.php';
 require_once __DIR__ . '/../src/Calculators/CalorieCalculator.php';
 
 
+
 $type = (isset($_GET['type'])) ? $_GET['type'] : 'tcx';
 
 if ($type == 'tcx'){
@@ -30,6 +31,9 @@ if ($type == 'tcx'){
     $parser = new \Waddle\Parsers\PWXParser();
     $activity = $parser->parse('run.pwx');
 }
+
+echo "File metadata (GPX only):";
+var_dump($activity->getMetaData());
 
 echo "type of activity (not available in CSV): ";
 var_dump($activity->getType());
