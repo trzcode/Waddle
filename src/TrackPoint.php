@@ -25,6 +25,8 @@ class TrackPoint
     protected $calories;
     /** @var int */
     protected $cadence;
+    /** @var int */
+    protected $watts;
 
     /**
      * Get the timestamp in a given format
@@ -98,6 +100,15 @@ class TrackPoint
     public function getCalories()
     {
         return $this->calories;
+    }
+
+    /**
+     * Get the current watts
+     * @return int
+     */
+    public function getWatts()
+    {
+        return $this->watts;
     }
 
     /**
@@ -186,6 +197,17 @@ class TrackPoint
     public function setCalories($val)
     {
         $this->calories = $val;
+        return $this;
+    }
+
+    /**
+     * Set the current watts
+     * @param int $val
+     * @return $this
+     */
+    public function setWatts($val)
+    {
+        $this->watts = $val;
         return $this;
     }
 }

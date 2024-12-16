@@ -136,14 +136,14 @@ class TCXParser extends Parser
         }
 
         // If cadence is present on node, set that.
+        // In case the activity is a Bike activity
         if (isset($trackPointNode->Cadence)) {
             $point->setCadence((int)$trackPointNode->Cadence);
         }
 
         // If the speed extension is present on the node, set that.
         if ($this->nameNSActivityExtensionV2) {
-            $trackPointNode->registerXPathNamespace('a', self::NS_TRAININGCENTER_V2);
-            $trackPointNode->registerXPathNamespace('ns3', self::NS_ACTIVITY_EXTENSION_V2);
+            $this->registerXPathNamespaces($trackPointNode);
 
             $speed = $trackPointNode->xpath('a:Extensions/ns3:TPX/ns3:Speed/text()');
             
@@ -151,6 +151,14 @@ class TCXParser extends Parser
                 $point->setSpeed((float)$speed[0]);
             }
 
+            // Watts
+            $watts = $trackPointNode->xpath('a:Extensions/ns3:TPX/ns3:Watts/text()');
+            
+            if (isset($watts) && \is_array($watts) && \count($watts) == 1) {
+                $point->setWatts((int)$watts[0]);
+            }
+
+            // In case the activity is a Running activity
             $runCadence = $trackPointNode->xpath('a:Extensions/ns3:TPX/ns3:RunCadence/text()');
             
             if (isset($runCadence) && \is_array($runCadence) && \count($runCadence) == 1) {
@@ -161,5 +169,10 @@ class TCXParser extends Parser
 
         return $point;
 
+    }
+
+    private function registerXPathNamespaces(&$node): void {
+        $node->registerXPathNamespace('a', self::NS_TRAININGCENTER_V2);
+        $node->registerXPathNamespace('ns3', self::NS_ACTIVITY_EXTENSION_V2);
     }
 }
