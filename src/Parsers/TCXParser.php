@@ -11,6 +11,7 @@ use Waddle\TrackPoint;
 
 class TCXParser extends Parser
 {
+    const NS_TRAININGCENTER_V2 = 'http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2';
     const NS_ACTIVITY_EXTENSION_V2 = 'http://www.garmin.com/xmlschemas/ActivityExtension/v2';
 
     /** @var string */
@@ -36,6 +37,9 @@ class TCXParser extends Parser
             throw new Exception("Unable to find valid activity in file contents");
         }
         $this->detectsNamespace($data);
+
+        $data->registerXPathNamespace('ns3', self::NS_ACTIVITY_EXTENSION_V2);
+        $data->registerXPathNamespace('a', self::NS_TRAININGCENTER_V2);
 
         // Parse the first activity
         $activityNode = $data->Activities->Activity[0];
@@ -138,10 +142,22 @@ class TCXParser extends Parser
 
         // If the speed extension is present on the node, set that.
         if ($this->nameNSActivityExtensionV2) {
-            if (isset($trackPointNode->Extensions->children('x', true)->TPX->children()->Speed)) {
-                $point->setSpeed((float)$trackPointNode->Extensions->children('x', true)->TPX->children()->Speed);
+            $trackPointNode->registerXPathNamespace('a', self::NS_TRAININGCENTER_V2);
+            $trackPointNode->registerXPathNamespace('ns3', self::NS_ACTIVITY_EXTENSION_V2);
+
+            $speed = $trackPointNode->xpath('a:Extensions/ns3:TPX/ns3:Speed/text()');
+            
+            if (isset($speed) && \is_array($speed) && \count($speed) == 1) {
+                $point->setSpeed((float)$speed[0]);
+            }
+
+            $runCadence = $trackPointNode->xpath('a:Extensions/ns3:TPX/ns3:RunCadence/text()');
+            
+            if (isset($runCadence) && \is_array($runCadence) && \count($runCadence) == 1) {
+                $point->setCadence((int)$runCadence[0]);
             }
         }
+        
 
         return $point;
 
