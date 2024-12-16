@@ -1,5 +1,5 @@
 {
-    "name": "duckfusion/waddle",
+    "name": "trzcode/waddle",
     "type": "library",
     "description": "PHP Library for parsing running GPS activities and calculating metrics",
     "keywords": ["gps", "tcx", "gpx", "pwx", "running", "parse"],
@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "ext-simplexml": "*",
+        "ext-simplexml": "*"
+    },
+    "require-dev": {
         "phpunit/phpunit": "11.3"
     },
     "autoload": {
