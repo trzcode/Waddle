@@ -407,7 +407,7 @@ class Activity
                 $maxSpeed = \max($maxSpeed, $speed);
             }
 
-            $watts = $watts->getWatts();
+            $watts = $trackPoint->getWatts();
             if (0 < $watts) {
                 $wattsSum += $watts;
                 $wattsValueCount++;
