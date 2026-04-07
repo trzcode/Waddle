@@ -94,8 +94,54 @@ class TCXParser extends Parser
             $lap->setMaxHeartRate((int)$lapNode->MaximumHeartRateBpm->Value);
         }
 
+        // For Bike Activity
         if (isset($lapNode->Cadence)) {
             $lap->setCadence((int)$lapNode->Cadence);
+            $lap->setAvgCadence((int)$lapNode->Cadence);
+        }
+        // Parse ActivityLapExtension
+        $this->registerXPathNamespaces($lapNode);
+        
+        $maxCadences = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:MaxBikeCadence/text()');
+        
+        if (isset($maxCadences) && \is_array($maxCadences) && \count($maxCadences) == 1) {
+            $lap->setMaxCadence((int)$maxCadences[0]);
+        }
+
+        $maxCadences = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:MaxRunCadence/text()');
+        
+        if (isset($maxCadences) && \is_array($maxCadences) && \count($maxCadences) == 1) {
+            $lap->setMaxCadence((int)$maxCadences[0]);
+        }
+
+        $avgCadences = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:AvgRunCadence/text()');
+        
+        if (isset($avgCadences) && \is_array($avgCadences) && \count($avgCadences) == 1) {
+            $lap->setAvgCadence((int)$avgCadences[0]);
+            $lap->setCadence((int)$avgCadences[0]);
+        }
+
+        $avgSpeed = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:AvgSpeed/text()');
+            
+        if (isset($avgSpeed) && \is_array($avgSpeed) && \count($avgSpeed) == 1) {
+            $lap->setAvgSpeed((float)$avgSpeed[0]);
+        }
+
+        // Watts
+        $avgWatts = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:AvgWatts/text()');
+        
+        if (isset($avgWatts) && \is_array($avgWatts) && \count($avgWatts) == 1) {
+            $lap->setAvgWatts((int)$avgWatts[0]);
+        }
+        $maxWatts = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:MaxWatts/text()');
+        
+        if (isset($maxWatts) && \is_array($maxWatts) && \count($maxWatts) == 1) {
+            $lap->setMaxWatts((int)$maxWatts[0]);
+        }
+        $steps = $lapNode->xpath('a:Extensions/ns3:TPX/ns3:Steps/text()');
+        
+        if (isset($steps) && \is_array($steps) && \count($steps) == 1) {
+            $lap->setSteps((int)$steps[0]);
         }
 
         // Loop through tracks

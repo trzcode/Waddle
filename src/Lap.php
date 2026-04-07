@@ -10,6 +10,8 @@ class Lap
     protected $totalDistance;
     /** @var float Meters per seconds */
     protected $maxSpeed;
+    /** @var float Meters per seconds */
+    protected $avgSpeed;
     /** @var float */
     protected $totalCalories;
     /** @var TrackPoint[] */
@@ -20,6 +22,16 @@ class Lap
     protected $maxHeartRate = null;
     /** @var int */
     protected $cadence = null;
+    /** @var int */
+    protected $maxCadence = null;
+    /** @var int */
+    protected $avgCadence = null;
+    /** @var int */
+    protected $steps = null;
+    /** @var int */
+    protected $maxWatts = null;
+    /** @var int */
+    protected $avgWatts = null;
 
     /**
      * Get the total lap time
@@ -209,4 +221,112 @@ class Lap
         return $this;
     }
 
+
+    /**
+     * Get the value of avgWatts
+     */
+    public function getAvgWatts()
+    {
+        return $this->avgWatts;
+    }
+
+    /**
+     * Set the value of avgWatts
+     */
+    public function setAvgWatts($avgWatts): self
+    {
+        $this->avgWatts = $avgWatts;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of maxCadence
+     */
+    public function getMaxCadence()
+    {
+        return $this->maxCadence;
+    }
+
+    /**
+     * Set the value of maxCadence
+     */
+    public function setMaxCadence($maxCadence): self
+    {
+        $this->maxCadence = $maxCadence;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of avgCadence
+     */
+    public function getAvgCadence()
+    {
+        return $this->avgCadence;
+    }
+
+    /**
+     * Set the value of avgCadence
+     */
+    public function setAvgCadence($avgCadence): self
+    {
+        $this->avgCadence = $avgCadence;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of steps
+     */
+    public function getSteps()
+    {
+        return $this->steps;
+    }
+
+    /**
+     * Set the value of steps
+     */
+    public function setSteps($steps): self
+    {
+        $this->steps = $steps;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of maxWatts
+     */
+    public function getMaxWatts()
+    {
+        return $this->maxWatts;
+    }
+
+    /**
+     * Set the value of maxWatts
+     */
+    public function setMaxWatts($maxWatts): self
+    {
+        $this->maxWatts = $maxWatts;
+
+        return $this;
+    }
+
+    /**
+     * The average speed in meter per seconds
+     */
+    public function getAvgSpeed()
+    {
+        return $this->avgSpeed;
+    }
+
+    /**
+     * Set the average speed in meter per seconds
+     */
+    public function setAvgSpeed($avgSpeed): self
+    {
+        $this->avgSpeed = $avgSpeed;
+
+        return $this;
+    }
 }
