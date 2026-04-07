@@ -38,6 +38,10 @@ class TrackPoint
         return ($this->time instanceof DateTime) ? $this->time->format($format) : $this->time;
     }
 
+    public function getDateTime() {
+        return $this->time;
+    }
+
     /**
      * Get either the lat/long array or a specific value from it, if "lat" or "lon" is passed in
      * @param string $type

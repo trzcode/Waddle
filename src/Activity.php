@@ -344,23 +344,88 @@ class Activity
 
         $splits = [];
         $diff = 0;
+        $calories = 0;
         $point = null;
-        $key = null;
+        $split = new Lap();
 
         foreach ($this->laps as $lap) {
-            foreach ($lap->getTrackPoints() as $key => $point) {
-                if (($point->getDistance() - $diff) >= $distance) {
-                    $splits[] = $key;
+            foreach ($lap->getTrackPoints() as $point) {
+                $split->addTrackPoint($point);
+                $calories += $point->getCalories();
+                $splitDistance = $point->getDistance() - $diff;
+                if ($splitDistance >= $distance) {
+                    $split->setTotalDistance($splitDistance);
+                    $split->setTotalCalories($calories);
+                    $this->calculateAndAddAveragesAndMaximums($lap);
+                    $splits[] = $split;
                     $diff = $point->getDistance();
+                    $split = new Lap();
                 }
             }
         }
 
         // Get the last split, even if it's not a full mile
         if ($point && $point->getDistance() > $diff) {
-            $splits[] = $key;
+            $splits[] = $split;
         }
 
         return $splits;
+    }
+
+    protected function calculateAndAddAveragesAndMaximums(Lap &$lap) {
+        $hrSum = 0;
+        $hrValueCount = 0;
+        $maxHr = 0;
+        $cadenceSum = 0;
+        $cadenceValueCount = 0;
+        $maxCadence = 0;
+        $maxSpeed = 0;
+        $speedSum = 0;
+        $speedValueCount = 0;
+        $maxWatts = 0;
+        $wattsSum = 0;
+        $wattsValueCount = 0;
+        foreach ($lap->getTrackPoints() as $trackPoint) {
+            $hr = $trackPoint->getHeartRate();
+            if (0 < $hr) {
+                $hrSum += $hr;
+                $hrValueCount++;
+                $maxHr = \max($maxHr, $hr);
+            }
+
+            $cadence = $trackPoint->getCadence();
+            if (0 < $cadence) {
+                $cadenceSum += $cadence;
+                $cadenceValueCount++;
+                $maxCadence = \max($maxCadence, $cadence);
+            }
+
+            $speed = $trackPoint->getSpeed();
+            if (0 < $speed) {
+                $speedSum += $speed;
+                $speedValueCount++;
+                $maxSpeed = \max($maxSpeed, $speed);
+            }
+
+            $watts = $watts->getWatts();
+            if (0 < $watts) {
+                $wattsSum += $watts;
+                $wattsValueCount++;
+                $maxWatts = \max($maxWatts, $watts);
+            }
+        }
+        $firstTrackpointTimestamp = $lap->getTrackPoint(0)->getTime()->getTimestamp();
+        $lastTrackPointTimestamp = $lap->getTrackPoint(\count($lap->getTrackPoints() - 1))->getTime()->getTimestamp();
+        $lap->setTotalTime($lastTrackPointTimestamp - $firstTrackpointTimestamp);
+        // TODO: Check if cadence should be there at all
+        $lap->setCadence($cadenceValueCount > 0 ? $cadenceSum / $cadenceValueCount : 0);
+        $lap->setAvgCadence($lap->getCadence());
+        $lap->setMaxCadence($maxCadence);
+        $lap->setAvgHeartRate($hrValueCount > 0 ? $hrSum / $hrValueCount : 0);
+        $lap->setMaxHeartRate($maxHr);
+        $lap->setAvgSpeed($speedValueCount > 0 ? $speedSum / $speedValueCount : 0);
+        $lap->setMaxSpeed($maxSpeed);
+        $lap->setAvgWatts($wattsValueCount > 0 ? $wattsSum / $wattsValueCount : 0);
+        $lap->setMaxWatts($maxWatts);
     }
 }
