@@ -364,8 +364,8 @@ class Activity
                     $diff = $point->getDistance();
                     $split = new Lap();
                 }
-                $index++;
             }
+            $index++;
         }
 
         // Get the last split, even if it's not a full one
