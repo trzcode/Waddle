@@ -13,16 +13,26 @@ Installation
 ```javascript
 {
     "require": {
-        "duckfusion/waddle": "^1.0"
+        "trzcode/waddle": "dev-master"
     }
 }
-```        
+```
 
 ### via Zip file
 
 Download the Waddle zip file from this repository and place inside your project.
 You will then need to require or include the files you wish to use, unless you are making use of an autoloader.
 
+Run Unit Tests
+-----
+```bash
+composer test
+```
+
+with debug
+```bash
+composer test -- --debug
+```
 
 Example Usage
 -----
