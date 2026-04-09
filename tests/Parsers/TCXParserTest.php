@@ -156,4 +156,38 @@ class TCXParserTest extends \PHPUnit\Framework\TestCase
         }
     }
     
+    public function testActivitySplitsInKilometresValues(){
+        $splitDistances = [
+            1000.69, 1000.12, 1000.75, 1002.87, 820.51
+        ];
+        $splits = $this->getActivity()->getSplits('k');
+        $this->assertEquals(5, count($splits));
+
+        
+        for ($i = 0; $i < count($splits); $i++) {
+            $this->assertEquals($splitDistances[$i], round($splits[$i]->getTotalDistance(), 2));
+        }
+    }
+    
+    public function testActivitySplitsInKilometresValuesGarminFile(){
+        $splitDistances = [
+            997.63,1000.12,153.39
+        ];
+        $splitCadences = [
+            86.91,86.45,86.89
+        ];
+        $activity = $this->parser->parse( __DIR__ . '/../run_garmin.tcx' );
+
+        $splits = $activity->getSplits('k');
+        foreach ($splits as $split) {
+            echo $split->getCadence().",";
+        }
+        $this->assertEquals(3, count($splits));
+
+        
+        for ($i = 0; $i < count($splits); $i++) {
+            $this->assertEquals($splitDistances[$i], round($splits[$i]->getTotalDistance(), 2));
+            $this->assertEquals($splitCadences[$i], round($splits[$i]->getCadence(), 2));
+        }
+    }
 }

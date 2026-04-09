@@ -354,15 +354,18 @@ class Activity
             foreach ($lap->getTrackPoints() as $point) {
                 $split->addTrackPoint($point);
                 $splitDistance = $point->getDistance() - $diff;
+                
                 if ($splitDistance >= $distance) {
-                    $this->calculateAndAddAveragesAndMaximums($lap);
+                    $this->calculateAndAddAveragesAndMaximums($split);
                     $splits[] = $split;
                     $diff = $point->getDistance();
                     $split = new Lap();
+                    $split->addTrackPoint($point);
                 }
             }
             if ($index == $lastIndex) {
-
+                $this->calculateAndAddAveragesAndMaximums($split);
+                $splits[] = $split;
             }
             $index++;
         }
