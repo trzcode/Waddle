@@ -344,26 +344,25 @@ class Activity
 
         $splits = [];
         $diff = 0;
-        $calories = 0;
         $point = null;
         $split = new Lap();
         $index = 0;
         $lastIndex = \count($this->laps) - 1;
+        $splitDistance = 0;
 
         foreach ($this->laps as $lap) {
             foreach ($lap->getTrackPoints() as $point) {
                 $split->addTrackPoint($point);
-                $calories += $point->getCalories();
                 $splitDistance = $point->getDistance() - $diff;
-                if ($splitDistance >= $distance
-                    || $index == $lastIndex) {
-                    $split->setTotalDistance($splitDistance);
-                    $split->setTotalCalories($calories);
+                if ($splitDistance >= $distance) {
                     $this->calculateAndAddAveragesAndMaximums($lap);
                     $splits[] = $split;
                     $diff = $point->getDistance();
                     $split = new Lap();
                 }
+            }
+            if ($index == $lastIndex) {
+
             }
             $index++;
         }
@@ -392,6 +391,7 @@ class Activity
         $maxWatts = 0;
         $wattsSum = 0;
         $wattsValueCount = 0;
+        $calories = 0;
         foreach ($lap->getTrackPoints() as $trackPoint) {
             $hr = $trackPoint->getHeartRate();
             if (0 < $hr) {
@@ -420,9 +420,17 @@ class Activity
                 $wattsValueCount++;
                 $maxWatts = \max($maxWatts, $watts);
             }
+            
+            $calories += $trackPoint->getCalories();
         }
-        $firstTrackpointTimestamp = $lap->getTrackPoint(0)->getDateTime()->getTimestamp();
-        $lastTrackPointTimestamp = $lap->getTrackPoint(\count($lap->getTrackPoints()) - 1)->getDateTime()->getTimestamp();
+        
+        $lastIndex = \count($lap->getTrackPoints()) - 1;
+        $firstTrackPoint = $lap->getTrackPoint(0);
+        $lastTrackPoint = $lap->getTrackPoint($lastIndex);
+        $distance = $lastTrackPoint->getDistance() - $firstTrackPoint->getDistance();
+
+        $firstTrackpointTimestamp = $firstTrackPoint->getDateTime()->getTimestamp();
+        $lastTrackPointTimestamp = $lastTrackPoint->getDateTime()->getTimestamp();
         $lap->setTotalTime($lastTrackPointTimestamp - $firstTrackpointTimestamp);
         // TODO: Check if cadence should be there at all
         $lap->setCadence($cadenceValueCount > 0 ? $cadenceSum / $cadenceValueCount : 0);
@@ -434,5 +442,7 @@ class Activity
         $lap->setMaxSpeed($maxSpeed);
         $lap->setAvgWatts($wattsValueCount > 0 ? $wattsSum / $wattsValueCount : 0);
         $lap->setMaxWatts($maxWatts);
+        $lap->setTotalDistance($distance);
+        $lap->setTotalCalories($calories);
     }
 }
