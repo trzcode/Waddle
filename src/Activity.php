@@ -347,13 +347,16 @@ class Activity
         $calories = 0;
         $point = null;
         $split = new Lap();
+        $index = 0;
+        $lastIndex = \count($this->laps) - 1;
 
         foreach ($this->laps as $lap) {
             foreach ($lap->getTrackPoints() as $point) {
                 $split->addTrackPoint($point);
                 $calories += $point->getCalories();
                 $splitDistance = $point->getDistance() - $diff;
-                if ($splitDistance >= $distance) {
+                if ($splitDistance >= $distance
+                    || $index == $lastIndex) {
                     $split->setTotalDistance($splitDistance);
                     $split->setTotalCalories($calories);
                     $this->calculateAndAddAveragesAndMaximums($lap);
@@ -361,13 +364,17 @@ class Activity
                     $diff = $point->getDistance();
                     $split = new Lap();
                 }
+                $index++;
             }
         }
 
-        // Get the last split, even if it's not a full mile
-        if ($point && $point->getDistance() > $diff) {
+        // Get the last split, even if it's not a full one
+        /*if ($point && $point->getDistance() > $diff) {
+            $split->setTotalDistance($splitDistance);
+            $split->setTotalCalories($calories);
+            $this->calculateAndAddAveragesAndMaximums($lap);
             $splits[] = $split;
-        }
+        }*/
 
         return $splits;
     }
