@@ -415,7 +415,7 @@ class Activity
             }
         }
         $firstTrackpointTimestamp = $lap->getTrackPoint(0)->getDateTime()->getTimestamp();
-        $lastTrackPointTimestamp = $lap->getTrackPoint(\count($lap->getTrackPoints() - 1))->getDateTime()->getTimestamp();
+        $lastTrackPointTimestamp = $lap->getTrackPoint(\count($lap->getTrackPoints()) - 1)->getDateTime()->getTimestamp();
         $lap->setTotalTime($lastTrackPointTimestamp - $firstTrackpointTimestamp);
         // TODO: Check if cadence should be there at all
         $lap->setCadence($cadenceValueCount > 0 ? $cadenceSum / $cadenceValueCount : 0);

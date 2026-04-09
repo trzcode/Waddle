@@ -84,7 +84,8 @@ class CSVParser extends Parser
     {
         $point = new TrackPoint();
 
-        // CSV format does not store the time, so can't do that
+        // CSV format does not store the time, but has a counter in time column
+        $point->setTime(\DateTime::createFromFormat('U', $trackPointRow[$this->getHeaderKey('time')]));
 
         if ($this->getHeaderKey('lat') !== false && $this->getHeaderKey('lon') !== false) {
             $point->setPosition([
