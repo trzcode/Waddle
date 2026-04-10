@@ -364,8 +364,10 @@ class Activity
                 }
             }
             if ($index == $lastIndex) {
-                $this->calculateAndAddAveragesAndMaximums($split);
-                $splits[] = $split;
+                if ($split->hasTrackPoints()) { // Only add split if it has trackpoints, w/o trackpoints there is no distance possible
+                    $this->calculateAndAddAveragesAndMaximums($split);
+                    $splits[] = $split;
+                }
             }
             $index++;
         }
