@@ -180,7 +180,7 @@ class TCXParserTest extends \PHPUnit\Framework\TestCase
 
         $splits = $activity->getSplits('k');
         foreach ($splits as $split) {
-            echo $split->getCadence().",";
+            //echo $split->getCadence().",";
         }
         $this->assertEquals(3, count($splits));
 

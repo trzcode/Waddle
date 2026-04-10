@@ -395,46 +395,50 @@ class Activity
         $wattsSum = 0;
         $wattsValueCount = 0;
         $calories = 0;
-        foreach ($lap->getTrackPoints() as $trackPoint) {
-            $hr = $trackPoint->getHeartRate();
-            if (0 < $hr) {
-                $hrSum += $hr;
-                $hrValueCount++;
-                $maxHr = \max($maxHr, $hr);
-            }
+        if ($lap->hasTrackPoints()) {
+            foreach ($lap->getTrackPoints() as $trackPoint) {
+                $hr = $trackPoint->getHeartRate();
+                if (0 < $hr) {
+                    $hrSum += $hr;
+                    $hrValueCount++;
+                    $maxHr = \max($maxHr, $hr);
+                }
 
-            $cadence = $trackPoint->getCadence();
-            if (0 < $cadence) {
-                $cadenceSum += $cadence;
-                $cadenceValueCount++;
-                $maxCadence = \max($maxCadence, $cadence);
-            }
+                $cadence = $trackPoint->getCadence();
+                if (0 < $cadence) {
+                    $cadenceSum += $cadence;
+                    $cadenceValueCount++;
+                    $maxCadence = \max($maxCadence, $cadence);
+                }
 
-            $speed = $trackPoint->getSpeed();
-            if (0 < $speed) {
-                $speedSum += $speed;
-                $speedValueCount++;
-                $maxSpeed = \max($maxSpeed, $speed);
-            }
+                $speed = $trackPoint->getSpeed();
+                if (0 < $speed) {
+                    $speedSum += $speed;
+                    $speedValueCount++;
+                    $maxSpeed = \max($maxSpeed, $speed);
+                }
 
-            $watts = $trackPoint->getWatts();
-            if (0 < $watts) {
-                $wattsSum += $watts;
-                $wattsValueCount++;
-                $maxWatts = \max($maxWatts, $watts);
+                $watts = $trackPoint->getWatts();
+                if (0 < $watts) {
+                    $wattsSum += $watts;
+                    $wattsValueCount++;
+                    $maxWatts = \max($maxWatts, $watts);
+                }
+                
+                $calories += $trackPoint->getCalories();
             }
             
-            $calories += $trackPoint->getCalories();
+            $firstTrackPoint = $lap->getFirstTrackPoint();
+            $lastTrackPoint = $lap->getLastTrackPoint();
+            
+            $distance = $lastTrackPoint->getDistance() - $firstTrackPoint->getDistance();
+            $lap->setTotalDistance($distance);
+
+            $firstTrackpointTimestamp = $firstTrackPoint->getDateTime()->getTimestamp();
+            $lastTrackPointTimestamp = $lastTrackPoint->getDateTime()->getTimestamp();
+            $lap->setTotalTime($lastTrackPointTimestamp - $firstTrackpointTimestamp);
         }
         
-        $lastIndex = \count($lap->getTrackPoints()) - 1;
-        $firstTrackPoint = $lap->getTrackPoint(0);
-        $lastTrackPoint = $lap->getTrackPoint($lastIndex);
-        $distance = $lastTrackPoint->getDistance() - $firstTrackPoint->getDistance();
-
-        $firstTrackpointTimestamp = $firstTrackPoint->getDateTime()->getTimestamp();
-        $lastTrackPointTimestamp = $lastTrackPoint->getDateTime()->getTimestamp();
-        $lap->setTotalTime($lastTrackPointTimestamp - $firstTrackpointTimestamp);
         // TODO: Check if cadence should be there at all
         $lap->setCadence($cadenceValueCount > 0 ? $cadenceSum / $cadenceValueCount : 0);
         $lap->setAvgCadence($lap->getCadence());
@@ -445,7 +449,6 @@ class Activity
         $lap->setMaxSpeed($maxSpeed);
         $lap->setAvgWatts($wattsValueCount > 0 ? $wattsSum / $wattsValueCount : 0);
         $lap->setMaxWatts($maxWatts);
-        $lap->setTotalDistance($distance);
         $lap->setTotalCalories($calories);
     }
 }

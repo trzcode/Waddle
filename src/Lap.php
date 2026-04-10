@@ -79,6 +79,28 @@ class Lap
     }
 
     /**
+     * Returns whether this lap has trackpoints.
+     * 
+     * @return bool
+     */
+    public function hasTrackPoints(): bool {
+        return \count($this->trackPoints) > 0;
+    }
+
+    /**
+     * Gets the first trackpoint if has one
+     * @return TrackPoint|null
+     */
+    public function getFirstTrackPoint(): ?TrackPoint {
+        return $this->hasTrackPoints() ? $this->getTrackPoint(0) : null;
+    }
+
+    public function getLastTrackPoint(): ?TrackPoint {
+        $count = \count($this->trackPoints);
+        return $this->hasTrackPoints() ? $this->getTrackPoint($count - 1) : null;
+    }
+
+    /**
      * Gets an array of track points formatted for Google Maps integration. Render with json_encode()
      * @return array [['lat' => xxx, 'lng' => xxx], ...]
      */
